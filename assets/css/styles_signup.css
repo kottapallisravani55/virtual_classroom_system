@@ -1,0 +1,133 @@
+/* Glassmorphism Signup Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #1A1A3D;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.signup-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    width: 400px;
+    text-align: center;
+    color: white;
+}
+
+.signup-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Brighter placeholder text */
+.form-group input::placeholder,
+.form-group select::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Updated select dropdown and options */
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    appearance: none; /* Removes default dropdown styling */
+}
+
+/* Style for dropdown options */
+.form-group select option {
+    background: #1A1A3D; /* Dark background for dropdown options */
+    color: white; /* White text for options */
+}
+
+/* Ensuring selected option remains visible */
+.form-group select:focus {
+    background: rgba(0, 123, 255, 0.2); /* Light blue background on focus */
+}
+
+/* Styling for disabled options */
+.form-group select option:disabled {
+    color: rgba(255, 255, 255, 0.5); /* Light gray but still readable */
+}
+
+/* Prevent light blue hover on the first option */
+.form-group select option:hover {
+    background: #1A1A3D !important; /* Keep the same dark background */
+}
+
+/* Button Styling */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #f1f1f1;
+    color: black;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background: #007BFF;
+    color: white;
+}
+
+.signup-container p a {
+    color: yellow;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.signup-container p a:hover {
+    color: #FF5733; /* Red-orange hover color */
+}
+
+#error {
+    color: red;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    margin-top: 10px;
+}
+
+#subject-group {
+    display: none;
+}

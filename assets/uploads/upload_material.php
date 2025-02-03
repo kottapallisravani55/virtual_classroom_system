@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['material_file'])) {
 
     // Validate file type
     $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
-    $allowed_extensions = ['pdf', 'docx', 'pptx'];
+    $allowed_extensions = ['pdf', 'docx', 'pptx','ppt','txt'];
 
     if (!in_array(strtolower($file_ext), $allowed_extensions)) {
         echo "Invalid file type. Only PDF, DOCX, and PPTX are allowed.";
