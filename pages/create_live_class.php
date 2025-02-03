@@ -60,62 +60,74 @@ require '../vendor/autoload.php'; // Load PHPMailer library
             $password = $_POST['password'];
             $teacher_id = $_SESSION['user_id'];
 
-            // Insert the live class details into the database
-            $query = "INSERT INTO live_classes (class_name, description, class_date, teacher_id, class_link)
-                      VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssis", $class_name, $description, $class_date, $teacher_id, $class_link);
+            // Check for conflicting live classes
+            $conflict_query = "SELECT * FROM live_classes WHERE class_date = ? AND class_name = ?";
+            $conflict_stmt = $conn->prepare($conflict_query);
+            $conflict_stmt->bind_param("ss", $class_date, $class_name);
+            $conflict_stmt->execute();
+            $conflict_result = $conflict_stmt->get_result();
 
-            if ($stmt->execute()) {
-                echo "Live class created successfully!";
-
-                // Fetch all student emails
-                $studentQuery = "SELECT email FROM students";
-                $result = $conn->query($studentQuery);
-
-                if ($result->num_rows > 0) {
-                    // Prepare PHPMailer
-                    $mail = new PHPMailer(true);
-                    try {
-                        // SMTP configuration
-                        $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com';
-                        $mail->SMTPAuth = true;
-                        $mail->Username = $email; // Teacher's email
-                        $mail->Password = $password; // Teacher's email password
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
-
-                        // Email settings
-                        $mail->setFrom($email, 'Virtual Classroom');
-                        $mail->Subject = "New Live Class Scheduled: $class_name";
-                        $mail->isHTML(true);
-                        $mail->Body = "A new live class has been scheduled. <br><br>
-                                       <strong>Class Name:</strong> $class_name<br>
-                                       <strong>Description:</strong> $description<br>
-                                       <strong>Date and Time:</strong> $class_date<br>
-                                       <strong>Join Class:</strong> <a href='$class_link' target='_blank'>Click here</a>";
-
-                        // Add all student emails as BCC
-                        while ($student = $result->fetch_assoc()) {
-                            $mail->addBCC($student['email']);
-                        }
-
-                        // Send the email
-                        $mail->send();
-                        echo "Emails sent to all students successfully!";
-                    } catch (Exception $e) {
-                        echo "Error while sending emails: {$mail->ErrorInfo}";
-                    }
-                } else {
-                    echo "No students found in the database.";
-                }
-
-                // Redirect to the live classes page
-                header("Location: view_live_classes.php");
-                exit();
+            if ($conflict_result->num_rows > 0) {
+                // Conflict detected
+                echo "<script>alert('A live class is already scheduled for \"$class_name\" at $class_date by another teacher. Please choose a different time or class.');</script>";
             } else {
-                echo "Error: " . $stmt->error;
+                // Insert the live class details into the database
+                $query = "INSERT INTO live_classes (class_name, description, class_date, teacher_id, class_link)
+                          VALUES (?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("sssis", $class_name, $description, $class_date, $teacher_id, $class_link);
+
+                if ($stmt->execute()) {
+                    echo "Live class created successfully!";
+
+                    // Fetch all student emails
+                    $studentQuery = "SELECT email FROM students";
+                    $result = $conn->query($studentQuery);
+
+                    if ($result->num_rows > 0) {
+                        // Prepare PHPMailer
+                        $mail = new PHPMailer(true);
+                        try {
+                            // SMTP configuration
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = $email; // Teacher's email
+                            $mail->Password = $password; // Teacher's email password
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = 587;
+
+                            // Email settings
+                            $mail->setFrom($email, 'Virtual Classroom');
+                            $mail->Subject = "New Live Class Scheduled: $class_name";
+                            $mail->isHTML(true);
+                            $mail->Body = "A new live class has been scheduled. <br><br>
+                                           <strong>Class Name:</strong> $class_name<br>
+                                           <strong>Description:</strong> $description<br>
+                                           <strong>Date and Time:</strong> $class_date<br>
+                                           <strong>Join Class:</strong> <a href='$class_link' target='_blank'>Click here</a>";
+
+                            // Add all student emails as BCC
+                            while ($student = $result->fetch_assoc()) {
+                                $mail->addBCC($student['email']);
+                            }
+
+                            // Send the email
+                            $mail->send();
+                            echo "Emails sent to all students successfully!";
+                        } catch (Exception $e) {
+                            echo "Error while sending emails: {$mail->ErrorInfo}";
+                        }
+                    } else {
+                        echo "No students found in the database.";
+                    }
+
+                    // Redirect to the live classes page
+                    header("Location: view_live_classes.php");
+                    exit();
+                } else {
+                    echo "Error: " . $stmt->error;
+                }
             }
         }
         ?>

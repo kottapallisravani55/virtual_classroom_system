@@ -13,7 +13,7 @@ $role = $_SESSION['role']; // 'teacher' or 'student'
 
 $teacher_email = null;
 if ($role == 'teacher') {
-    // Get teacher email from the `users` table where role is 'teacher'
+    // Get teacher email from the users table where role is 'teacher'
     $sql_email = "SELECT email FROM users WHERE id = ? AND role = 'teacher'";
     $stmt_email = $conn->prepare($sql_email);
     $stmt_email->bind_param("i", $user_id);
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Check if student_id is provided
             $student_id = $_POST['student_id'];
             if ($student_id) {
-                // Verify if the student ID exists in the `students` table
+                // Verify if the student ID exists in the students table
                 $sql_verify_student = "SELECT id FROM students WHERE id = ?";
                 $stmt_verify_student = $conn->prepare($sql_verify_student);
                 $stmt_verify_student->bind_param("i", $student_id);
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <tr>
                     <th>Chat Code</th>
                     <th>Student ID</th>
-                    <th>Meeting Link</th>
+                    <th>Action</th>
                 </tr>
                 <?php
                 $sql_chat_codes = "SELECT chat_code, student_id FROM chats WHERE teacher_email = ?";
@@ -139,10 +139,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <tr>
                         <td><?php echo $row['chat_code']; ?></td>
                         <td><?php echo $row['student_id']; ?></td>
-                        <td><a href="chat_room.php?chat_code=<?php echo $row['chat_code']; ?>" target="_blank">Join Chat</a></td>
+                        <td>
+                            <button onclick="openChat('<?php echo $row['chat_code']; ?>')">Join Chat</button>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
+
+            <!-- Chat iframe -->
+            <h3>Chat Room</h3>
+            <iframe id="chatIframe" src="" style="width: 100%; height: 500px; border: none;"></iframe>
         <?php endif; ?>
 
         <?php if ($role == 'student'): ?>
@@ -179,5 +185,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php endif; ?>
         <?php endif; ?>
     </div>
+
+    <script>
+        function openChat(chatCode) {
+            document.getElementById('chatIframe').src = "chat_room.php?chat_code=" + chatCode;
+        }
+    </script>
 </body>
-</html>
+</html> 

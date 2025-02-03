@@ -40,69 +40,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows > 0) {
             $error = "Email is already registered.";
-        } elseif ($role === 'teacher') {
-            // Check if the subject is already assigned to a teacher
-            $check_subject_query = "SELECT * FROM teachers WHERE subject = ?";
-            $stmt = $conn->prepare($check_subject_query);
-            $stmt->bind_param("s", $subject);
-            $stmt->execute();
-            $subject_result = $stmt->get_result();
-
-            if ($subject_result->num_rows > 0) {
-                $error = "This subject is already assigned to a teacher.";
-            } else {
-                // Register the teacher
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $conn->begin_transaction();
-
-                try {
-                    // Insert user into the 'users' table
-                    $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param("ssss", $username, $email, $hashed_password, $role);
-                    $stmt->execute();
-
-                    // Generate a unique 5-digit UID
-                    $uid = random_int(10000, 99999);
-
-                    // Insert into the 'teachers' table with uid
-                    $teacher_query = "INSERT INTO teachers (uid, username, email, subject) VALUES (?, ?, ?, ?)";
-                    $teacher_stmt = $conn->prepare($teacher_query);
-                    $teacher_stmt->bind_param("isss", $uid, $username, $email, $subject);
-                    $teacher_stmt->execute();
-
-                    $conn->commit();
-
-                    // Redirect to the login page after successful registration
-                    header("Location: login.php");
-                    exit;
-                } catch (Exception $e) {
-                    $conn->rollback();
-                    $error = "An error occurred. Please try again.";
-                }
-            }
-        } elseif ($role === 'student') {
-            // Extract the student ID from the email
-            preg_match('/^n([0-9]{2})([0-9]{4})@rguktn.ac.in$/', $email, $matches);
-            $batch = $matches[1];
-            $student_id = $matches[2];
-
-            // Register the student
+        } else {
+            // Register the user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $conn->begin_transaction();
 
             try {
-                // Insert user into the 'users' table with the student ID
-                $query = "INSERT INTO users (id, username, email, password, role) VALUES (?, ?, ?, ?, ?)";
+                // Insert user into the 'users' table
+                $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
                 $stmt = $conn->prepare($query);
-                $stmt->bind_param("issss", $student_id, $username, $email, $hashed_password, $role);
+                $stmt->bind_param("ssss", $username, $email, $hashed_password, $role);
                 $stmt->execute();
 
-                // Insert into the 'students' table
-                $student_query = "INSERT INTO students (id, username, email) VALUES (?, ?, ?)";
-                $student_stmt = $conn->prepare($student_query);
-                $student_stmt->bind_param("iss", $student_id, $username, $email);
-                $student_stmt->execute();
+                // Get the last inserted ID (user ID)
+                $user_id = $conn->insert_id;
+
+                if ($role === 'teacher') {
+                    // Insert teacher data into the 'teachers' table
+                    $teacher_query = "INSERT INTO teachers (username, email, subject, uid) VALUES (?, ?, ?, ?)";
+                    $teacher_stmt = $conn->prepare($teacher_query);
+                    $teacher_stmt->bind_param("sssi", $username, $email, $subject, $user_id);
+                    $teacher_stmt->execute();
+                } elseif ($role === 'student') {
+                    // Extract the student ID from the email
+                    preg_match('/^n([0-9]{2})([0-9]{4})@rguktn.ac.in$/', $email, $matches);
+                    $batch = $matches[1];
+                    $student_id = $matches[2];
+
+                    // Insert student data into the 'students' table
+                    $student_query = "INSERT INTO students (id, username, email) VALUES (?, ?, ?)";
+                    $student_stmt = $conn->prepare($student_query);
+                    $student_stmt->bind_param("iss", $student_id, $username, $email);
+                    $student_stmt->execute();
+                }
 
                 $conn->commit();
 
@@ -118,80 +88,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Virtual Classroom</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <style>
-        /* Styling for the signup page */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f8fc;
-            margin: 0;
-            padding: 0;
-        }
-        .signup-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .signup-container h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .form-group input:focus, .form-group select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .success {
-            color: green;
-            margin-top: 10px;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        #subject-group {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles_signup.css">
+
     <script>
         function toggleSubjectField() {
             const role = document.querySelector('select[name="role"]').value;
@@ -227,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="teacher">Teacher</option>
                 </select>
             </div>
-            <div class="form-group" id="subject-group">
+            <div class="form-group" id="subject-group" style="display: none;">
                 <input type="text" name="subject" placeholder="Subject You Teach">
             </div>
             <button type="submit" class="btn">Sign Up</button>

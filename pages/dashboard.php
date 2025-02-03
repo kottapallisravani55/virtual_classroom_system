@@ -81,6 +81,7 @@ $role = $_SESSION['role']; // Either 'teacher' or 'student'
         </div>
 
         <div class="btn-container">
+        <a href="profile.php" class="btn">profile</a>
             <a href="study_materials.php" class="btn">Study Materials</a>
             <a href="view_live_classes.php" class="btn">Live Classes</a>
             <a href="activities.php" class="btn">Activities Hub</a>

@@ -62,7 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+<link rel="stylesheet" href="styles_login.css">
+
 <div class="login-container">
+
     <h2>Login to Virtual Classroom</h2>
     <form action="login.php" method="POST">
         <div class="form-group">
@@ -76,5 +79,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="error"><?php echo $login_error; ?></p>
         <?php endif; ?>
     </form>
-    <p>Don't have an account? <a href="signup.php">Sign up here</a>.</p>
+    <p>Don't have an account?  <a href="signup.php" > Sign up here</a>.</p>
 </div>
