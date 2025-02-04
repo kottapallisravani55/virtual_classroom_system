@@ -119,79 +119,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Virtual Classroom</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <style>
-        /* Styling for the signup page */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f8fc;
-            margin: 0;
-            padding: 0;
-        }
-        .signup-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .signup-container h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .form-group input:focus, .form-group select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .success {
-            color: green;
-            margin-top: 10px;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        #subject-group {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles_signup.css">
+
+    
     <script>
         function toggleSubjectField() {
             const role = document.querySelector('select[name="role"]').value;

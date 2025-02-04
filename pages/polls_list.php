@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_poll'])) {
     $options = $_POST['options'];
 
     // Insert the poll into the database
-    $poll_query = "INSERT INTO polls (question, status, created_at) VALUES (?, 'active', NOW())";
+    $poll_query = "INSERT INTO polls (question, is_active, created_at) VALUES (?, 1, NOW())";
     $stmt = $conn->prepare($poll_query);
     $stmt->bind_param("s", $question);
     $stmt->execute();
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_poll'])) {
     // Insert poll options
     foreach ($options as $option) {
         if (!empty($option)) {
-            $option_query = "INSERT INTO poll_options (poll_id, option) VALUES (?, ?)";
+            $option_query = "INSERT INTO poll_options (poll_id, option_text) VALUES (?, ?)";
             $stmt = $conn->prepare($option_query);
             $stmt->bind_param("is", $poll_id, $option);
             $stmt->execute();
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_poll'])) {
     }
 
     header("Location: poll_list.php");
+    exit();
 }
 
 // Handle form submission for poll responses (Student voting)
@@ -53,14 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['poll_id']) && !$is_tea
     $option_id = $_POST['option'];
 
     // Check if the poll exists
-    $check_poll_query = "SELECT * FROM polls WHERE id = ?";
+    $check_poll_query = "SELECT * FROM polls WHERE id = ? AND is_active = 1";
     $stmt = $conn->prepare($check_poll_query);
     $stmt->bind_param("i", $poll_id);
     $stmt->execute();
     $poll_result = $stmt->get_result();
 
     if ($poll_result->num_rows == 0) {
-        echo "<script>alert('This poll does not exist.');</script>";
+        echo "<script>alert('This poll does not exist or is no longer active.');</script>";
         exit();
     }
 
@@ -95,46 +96,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['poll_id']) && !$is_tea
 }
 
 // Deactivate Poll (Teacher or allowed student)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deactivate_poll'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deactivate_poll']) && isset($_POST['poll_id']) && $is_teacher) {
     $poll_id = $_POST['poll_id'];
 
-    // Check if the poll exists
-    $check_poll_query = "SELECT * FROM polls WHERE id = ?";
-    $stmt = $conn->prepare($check_poll_query);
+    // Update the poll status to inactive
+    $deactivate_query = "UPDATE polls SET is_active = 0 WHERE id = ?";
+    $stmt = $conn->prepare($deactivate_query);
     $stmt->bind_param("i", $poll_id);
     $stmt->execute();
-    $poll_result = $stmt->get_result();
 
-    if ($poll_result->num_rows > 0) {
-        // Deactivate poll
-        $deactivate_query = "UPDATE polls SET status = 'inactive' WHERE id = ?";
-        $stmt = $conn->prepare($deactivate_query);
-        $stmt->bind_param("i", $poll_id);
-        $stmt->execute();
-        header("Location: poll_list.php");
-    }
+    echo "<script>alert('Poll deactivated successfully.');</script>";
 }
 
 // Grant student poll creation rights (Teacher only)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['grant_poll_creation']) && $is_teacher) {
     $student_id = $_POST['student_id'];
 
-    // Grant the student poll creation rights (making them a "Poll Creator")
-    $update_user_query = "UPDATE users SET role = 'poll_creator' WHERE id = ?";
-    $stmt = $conn->prepare($update_user_query);
-    $stmt->bind_param("i", $student_id);
+    // Grant the student poll creation rights by adding a record to the student_poll_access table
+    $grant_access_query = "INSERT INTO student_poll_access (student_id, granted_by) VALUES (?, ?)";
+    $stmt = $conn->prepare($grant_access_query);
+    $stmt->bind_param("ii", $student_id, $user_id);
     $stmt->execute();
     header("Location: poll_list.php");
+    exit();
 }
 
 // Fetch active polls
-$sql = "SELECT * FROM polls WHERE status = 'active'";
+$sql = "SELECT * FROM polls WHERE is_active = 1";
 $result = $conn->query($sql);
 
 // Fetch all students to grant poll creation rights
 $students_sql = "SELECT * FROM users WHERE role = 'student'";
 $students_result = $conn->query($students_sql);
 
+// Fetch students with poll creation access
+$poll_access_sql = "SELECT * FROM users WHERE id IN (SELECT student_id FROM student_poll_access)";
+$poll_access_result = $conn->query($poll_access_sql);
 ?>
 
 <!DOCTYPE html>
@@ -208,8 +205,8 @@ $students_result = $conn->query($students_sql);
         <div class="poll">
             <h3><?php echo $poll['question']; ?></h3>
 
-            <?php if ($is_teacher || $user['role'] == 'poll_creator') { ?>
-                <!-- Teacher/Poll Creator view: Show responses and manage the poll -->
+            <?php if ($is_teacher) { ?>
+                <!-- Teacher View: Show responses and manage the poll -->
                 <p><strong>Poll Responses:</strong></p>
                 <?php
                 $options_query = "SELECT * FROM poll_options WHERE poll_id = ?";
@@ -227,7 +224,6 @@ $students_result = $conn->query($students_sql);
                     $response_count_result = $stmt->get_result();
                     $response_count = $response_count_result->fetch_assoc()['response_count'];
 
-                    // Get total responses for the poll
                     $total_responses_query = "SELECT COUNT(*) AS total_responses FROM poll_responses WHERE poll_id = ?";
                     $stmt = $conn->prepare($total_responses_query);
                     $stmt->bind_param("i", $poll['id']);
@@ -236,17 +232,18 @@ $students_result = $conn->query($students_sql);
                     $total_responses = $total_responses_result->fetch_assoc()['total_responses'];
 
                     $percentage = $total_responses > 0 ? round(($response_count / $total_responses) * 100, 2) : 0;
-                    ?>
-                    <p><?php echo $option['option']; ?>: <?php echo $response_count; ?> responses (<?php echo $percentage; ?>%)</p>
+                ?>
+
+                    <p><?php echo $option['option_text']; ?> - <?php echo $response_count; ?> responses (<?php echo $percentage; ?>%)</p>
                 <?php } ?>
 
-                <!-- Option to deactivate or delete the poll -->
                 <form method="POST">
                     <input type="hidden" name="poll_id" value="<?php echo $poll['id']; ?>">
                     <button type="submit" name="deactivate_poll">Deactivate Poll</button>
                 </form>
+
             <?php } else { ?>
-                <!-- Student view: Allow students to vote -->
+                <!-- Students View: Allow voting -->
                 <form method="POST">
                     <?php
                     $options_query = "SELECT * FROM poll_options WHERE poll_id = ?";
@@ -254,15 +251,17 @@ $students_result = $conn->query($students_sql);
                     $stmt->bind_param("i", $poll['id']);
                     $stmt->execute();
                     $options_result = $stmt->get_result();
-
-                    while ($option = $options_result->fetch_assoc()) {
-                        ?>
-                        <input type="radio" name="option" value="<?php echo $option['id']; ?>" required> <?php echo $option['option']; ?><br>
+                    ?>
+                    <?php while ($option = $options_result->fetch_assoc()) { ?>
+                        <input type="radio" name="option" value="<?php echo $option['id']; ?>" required>
+                        <?php echo $option['option_text']; ?><br>
                     <?php } ?>
-                    <button type="submit" name="poll_id" value="<?php echo $poll['id']; ?>">Vote</button>
+                    <input type="hidden" name="poll_id" value="<?php echo $poll['id']; ?>">
+                    <button type="submit">Vote</button>
                 </form>
             <?php } ?>
         </div>
+        <hr>
     <?php } ?>
 </div>
 

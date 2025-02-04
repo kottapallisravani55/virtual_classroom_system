@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <tr>
                     <th>Chat Code</th>
                     <th>Student ID</th>
-                    <th>Meeting Link</th>
+                    <th>Action</th>
                 </tr>
                 <?php
                 $sql_chat_codes = "SELECT chat_code, student_id FROM chats WHERE teacher_email = ?";
@@ -139,10 +139,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <tr>
                         <td><?php echo $row['chat_code']; ?></td>
                         <td><?php echo $row['student_id']; ?></td>
-                        <td><a href="chat_room.php?chat_code=<?php echo $row['chat_code']; ?>" target="_blank">Join Chat</a></td>
+                        <td>
+                            <button onclick="openChat('<?php echo $row['chat_code']; ?>')">Join Chat</button>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
+
+            <!-- Chat iframe -->
+            <h3>Chat Room</h3>
+            <iframe id="chatIframe" src="" style="width: 100%; height: 500px; border: none;"></iframe>
         <?php endif; ?>
 
         <?php if ($role == 'student'): ?>
@@ -179,5 +185,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php endif; ?>
         <?php endif; ?>
     </div>
+
+    <script>
+        function openChat(chatCode) {
+            document.getElementById('chatIframe').src = "chat_room.php?chat_code=" + chatCode;
+        }
+    </script>
 </body>
 </html>

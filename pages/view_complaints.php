@@ -30,11 +30,15 @@ if ($role !== 'teacher') {
 $complaints = [];
 
 // Fetch all complaints for the logged-in teacher
-$sql_complaints = "SELECT c.id, c.student_id, c.subject, c.message, c.created_at, s.username AS student_name 
-                   FROM complaints c 
-                   JOIN users s ON c.student_id = s.id 
-                   WHERE c.teacher_id = ? 
-                   ORDER BY c.created_at DESC";
+$sql_complaints = "
+    SELECT c.id, c.student_id, c.subject, c.message, c.created_at, s.username AS student_name
+    FROM complaints c
+    JOIN users s ON c.student_id = s.id
+    JOIN teachers t ON t.subject = c.subject
+    WHERE t.uid = ?
+    ORDER BY c.created_at DESC
+";
+
 $stmt_complaints = $conn->prepare($sql_complaints);
 $stmt_complaints->bind_param("i", $user_id); // Bind the teacher ID (which is the logged-in user ID)
 $stmt_complaints->execute();
@@ -65,12 +69,14 @@ if ($result->num_rows > 0) {
             <tr>
                 <th>Subject</th>
                 <th>Complaint Message</th>
+                <th>Student</th>
                 <th>Date</th>
             </tr>
             <?php foreach ($complaints as $complaint): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($complaint['subject']); ?></td>
                     <td><?php echo htmlspecialchars($complaint['message']); ?></td>
+                    <td><?php echo htmlspecialchars($complaint['student_name']); ?></td>
                     <td><?php echo htmlspecialchars($complaint['created_at']); ?></td>
                 </tr>
             <?php endforeach; ?>
