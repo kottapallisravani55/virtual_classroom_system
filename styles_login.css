@@ -1,7 +1,7 @@
 /* Glassmorphism Login Page Styling */
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right,#00c9FF,#1A1A72);
+    background: #1a1a3d;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,7 +57,7 @@ body {
 }
 
 .btn:hover {
-    background: #2323a5;
+    background: #007BFF;
     color: white;
 }
 
@@ -76,20 +76,19 @@ body {
 
 /* Anchor Tag Styling */
 .login-container p a {
-    color: #FFFF;
-    font-weight: 600;
-    
+    color: yellow;
+    text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .login-container p a:hover {
-    color: #16dfce;
+    color: #FF5733; /* Red-orange hover color */
 }
 
 /* Error Styling */
 .error {
-    color: #fbff20; 
-    
+    color: #FF4C4C; /* Brighter red for better visibility */
+    font-weight: bold;
     font-size: 16px;
     margin-top: 10px;
 }

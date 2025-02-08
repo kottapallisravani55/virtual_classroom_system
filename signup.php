@@ -40,46 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows > 0) {
             $error = "Email is already registered.";
-        } elseif ($role === 'teacher') {
-            // Check if the subject is already assigned to a teacher
-            $check_subject_query = "SELECT * FROM teachers WHERE subject = ?";
-            $stmt = $conn->prepare($check_subject_query);
-            $stmt->bind_param("s", $subject);
-            $stmt->execute();
-            $subject_result = $stmt->get_result();
-
-            if ($subject_result->num_rows > 0) {
-                $error = "This subject is already assigned to a teacher.";
-            } else {
-                // Register the teacher
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $conn->begin_transaction();
-
-                try {
-                    // Insert user into the 'users' table
-                    $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param("ssss", $username, $email, $hashed_password, $role);
-                    $stmt->execute();
-
-                    // Insert into the 'teachers' table
-                    $teacher_query = "INSERT INTO teachers (username, email, subject) VALUES (?, ?, ?)";
-                    $teacher_stmt = $conn->prepare($teacher_query);
-                    $teacher_stmt->bind_param("sss", $username, $email, $subject);
-                    $teacher_stmt->execute();
-
-                    $conn->commit();
-
-                    // Redirect to the login page after successful registration
-                    header("Location: login.php");
-                    exit;
-                } catch (Exception $e) {
-                    $conn->rollback();
-                    $error = "An error occurred. Please try again.";
-                }
-            }
-        } elseif ($role === 'student') {
-            // Register the student
+        } else {
+            // Register the user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $conn->begin_transaction();
 
@@ -90,16 +52,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("ssss", $username, $email, $hashed_password, $role);
                 $stmt->execute();
 
-                // Extract the student ID from the email
-                preg_match('/^n([0-9]{2})([0-9]{4})@rguktn.ac.in$/', $email, $matches);
-                $batch = $matches[1];
-                $student_id = $matches[2];
+                // Get the last inserted ID (user ID)
+                $user_id = $conn->insert_id;
 
-                // Insert into the 'students' table
-                $student_query = "INSERT INTO students (id, username, email) VALUES (?, ?, ?)";
-                $student_stmt = $conn->prepare($student_query);
-                $student_stmt->bind_param("iss", $student_id, $username, $email);
-                $student_stmt->execute();
+                if ($role === 'teacher') {
+                    // Insert teacher data into the 'teachers' table
+                    $teacher_query = "INSERT INTO teachers (username, email, subject, uid) VALUES (?, ?, ?, ?)";
+                    $teacher_stmt = $conn->prepare($teacher_query);
+                    $teacher_stmt->bind_param("sssi", $username, $email, $subject, $user_id);
+                    $teacher_stmt->execute();
+                } elseif ($role === 'student') {
+                    // Extract the student ID from the email
+                    preg_match('/^n([0-9]{2})([0-9]{4})@rguktn.ac.in$/', $email, $matches);
+                    $batch = $matches[1];
+                    $student_id = $matches[2];
+
+                    // Insert student data into the 'students' table
+                    $student_query = "INSERT INTO students (id, username, email) VALUES (?, ?, ?)";
+                    $student_stmt = $conn->prepare($student_query);
+                    $student_stmt->bind_param("iss", $student_id, $username, $email);
+                    $student_stmt->execute();
+                }
 
                 $conn->commit();
 
@@ -115,7 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,7 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Sign Up - Virtual Classroom</title>
     <link rel="stylesheet" href="styles_signup.css">
 
-    
     <script>
         function toggleSubjectField() {
             const role = document.querySelector('select[name="role"]').value;
@@ -136,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     </script>
+    <div id="google_translate_element"></div>
 </head>
 <body>
     <div class="signup-container">
@@ -160,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="teacher">Teacher</option>
                 </select>
             </div>
-            <div class="form-group" id="subject-group">
+            <div class="form-group" id="subject-group" style="display: none;">
                 <input type="text" name="subject" placeholder="Subject You Teach">
             </div>
             <button type="submit" class="btn">Sign Up</button>
@@ -172,5 +144,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
         <p>Already have an account? <a href="login.php">Login here</a>.</p>
     </div>
+    <script src="script.js"></script>
+      <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en'},
+                'google_translate_element'
+            );
+        } 
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>

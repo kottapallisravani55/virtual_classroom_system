@@ -1,7 +1,7 @@
 /* Glassmorphism Signup Page Styling */
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right,#00c9ff,#1A1A72);
+    background: #1A1A3D;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,10 +33,10 @@ body {
 
 .form-group input,
 .form-group select {
-    width: 90%;
+    width: 100%;
     padding: 10px;
     margin: 5px 0;
-    border: none; /* Removed white border */
+    border: none;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.2);
     color: white;
@@ -45,8 +45,7 @@ body {
 
 .form-group input:focus,
 .form-group select:focus {
-    background: rgba(255, 255, 255, 0.3);
-    color: white;
+    border-color: #007bff;
     outline: none;
 }
 
@@ -58,42 +57,41 @@ body {
 
 /* Updated select dropdown and options */
 .form-group select {
-    width: 94%;
+    width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: none;
     border-radius: 10px;
-    background: rgba(200, 200, 200, 0.2); /* Changed from blue to grayish tint */
+    background: rgba(255, 255, 255, 0.2);
     color: white;
     font-size: 16px;
-    appearance: none;
+    appearance: none; /* Removes default dropdown styling */
 }
 
 /* Style for dropdown options */
 .form-group select option {
-    background: #444444; /* Changed to dark gray */
-    color: white;
+    background: #1A1A3D; /* Dark background for dropdown options */
+    color: white; /* White text for options */
 }
 
 /* Ensuring selected option remains visible */
 .form-group select:focus {
-    background: rgba(200, 200, 200, 0.3); /* Light frosted gray */
-    color: white;
+    background: rgba(0, 123, 255, 0.2); /* Light blue background on focus */
 }
 
 /* Styling for disabled options */
 .form-group select option:disabled {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5); /* Light gray but still readable */
 }
 
 /* Prevent light blue hover on the first option */
 .form-group select option:hover {
-    background: rgba(200, 200, 200, 0.2) ; /* Light frosted gray */
+    background: #1A1A3D !important; /* Keep the same dark background */
 }
 
 /* Button Styling */
 .btn {
-    width: 94%;
+    width: 100%;
     padding: 10px;
     border: none;
     border-radius: 10px;
@@ -106,22 +104,22 @@ body {
 }
 
 .btn:hover {
-    background: #2323a5;
+    background: #007BFF;
     color: white;
 }
 
 .signup-container p a {
-    color: #FFFF;
-    font-weight: 600;
+    color: yellow;
+    text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .signup-container p a:hover {
-    color: #17dbcb;
+    color: #FF5733; /* Red-orange hover color */
 }
 
 #error {
-    color: #fbff20;
+    color: red;
     margin-top: 10px;
 }
 
