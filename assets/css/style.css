@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: Arial, sans-serif;
   }
@@ -33,4 +34,41 @@ body {
     padding: 10px;
     cursor: pointer;
   }
+=======
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .chat-container {
+    display: none;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .chat-input-form {
+    display: flex;
+  }
+  
+  .chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+>>>>>>> ee7c9565c28e3f015817e1645a6e2d0b3b949065
   

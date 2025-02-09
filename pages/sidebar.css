@@ -1,0 +1,69 @@
+.sidebar {
+    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    height: 100vh;
+    width: 250px;
+    position: fixed; /* Fixed position ensures no layout overflow */
+    top: 0;
+    left: 0;
+    overflow-y: auto; /* Allow scrolling only for sidebar content */
+    padding-top: 20px;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+        /* Sidebar Profile Photo */
+        .sidebar .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 10px auto 0;
+            border: 3px solid #FFF;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); /* Glowing effect */
+            transition: box-shadow 0.3s ease;
+        }
+
+        /* Hover effect for glowing effect */
+        .sidebar .profile-photo:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 50px rgba(0, 255, 255, 0.5); /* Glowing effect on hover */
+        }
+
+        /* Sidebar Links */
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #FFF;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a i {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .sidebar a.active{
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 5px solid #FFF;
+            padding-left: 25px;
+            box-shadow: 0 0 10px #FFF, 0 0 5px #FFF, 0 0 10px #2575fc; /* Glow effect */
+            transition: all 0.3s ease;
+        }
+
+        /* Hover Effect with Glow */
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 5px solid #FFF;
+            padding-left: 25px;
+            box-shadow: 0 0 10px #FFF, 0 0 5px #FFF, 0 0 10px #2575fc; /* Glow effect */
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Text Centering */
+        .sidebar h3 {
+            color: #FFF;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 10px;
+        }
+

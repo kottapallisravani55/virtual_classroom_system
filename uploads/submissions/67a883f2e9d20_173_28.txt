@@ -1,0 +1,57 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class NameInputFrame extends Frame {
+
+    // Define UI components
+    private TextField name1Field;
+    private TextField name2Field;
+    private TextArea displayArea;
+    private Button submitButton;
+
+    public NameInputFrame() {
+        // Set up the frame
+        setTitle("Name Input Frame");
+        setSize(400, 300);
+        setLayout(new FlowLayout());
+        setVisible(true);
+
+        // Create and add components
+        name1Field = new TextField(20);
+        name2Field = new TextField(20);
+        displayArea = new TextArea(5, 30);
+        displayArea.setEditable(false); // Make the text area read-only
+        submitButton = new Button("Submit");
+
+        add(new Label("Name 1:"));
+        add(name1Field);
+        add(new Label("Name 2:"));
+        add(name2Field);
+        add(submitButton);
+        add(displayArea);
+
+        // Add action listener for the button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name1 = name1Field.getText();
+                String name2 = name2Field.getText();
+                displayArea.setText("Name 1: " + name1 + "\nName 2: " + name2);
+            }
+        });
+
+        // Handle window closing event
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        // Create and show the frame
+        new NameInputFrame();
+    }
+}

@@ -1,0 +1,88 @@
+.theme-toggle {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#theme-switch {
+    display: none;
+}
+
+.toggle-label {
+    width: 50px;
+    height: 25px;
+    background: linear-gradient(to right, #FFD700, #FFA500);
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.5s ease-in-out;
+}
+
+.toggle-label::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.4s ease;
+}
+
+#theme-switch:checked + .toggle-label {
+    background: linear-gradient(to right, #1A1A72, #4A4A90);
+}
+
+#theme-switch:checked + .toggle-label::before {
+    left: 27px;
+}
+
+.toggle-icon {
+    position: absolute;
+    font-size: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease;
+}
+
+.sun {
+    left: 6px;
+    color: #FFD700;
+}
+
+.moon {
+    right: 6px;
+    color: #FFF;
+    opacity: 0;
+}
+
+#theme-switch:checked + .toggle-label .sun {
+    opacity: 0;
+}
+
+#theme-switch:checked + .toggle-label .moon {
+    opacity: 1;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background: linear-gradient(to right, #1A1A72, #000);
+    color: white;
+}
+ /* Navbar Dark Mode */
+ .dark-mode .navbar {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.dark-mode .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+}

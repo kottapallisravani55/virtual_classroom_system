@@ -1,0 +1,241 @@
+.navbar .icon-container {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar .icon-container i {
+    font-size: 20px;
+    color: white;
+    margin-left: 15px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.navbar .icon-container i:hover {
+    color: #ffcc00; /* Highlight icon on hover */
+}
+
+/* Calendar popup */
+.calendar-popup {
+    position: absolute;
+    top: 60px;
+    right: 80px; /* Adjust based on your layout */
+    width: 450px; /* Increased width */
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 100;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Header styling */
+.calendar-popup header {
+    background: #0066ff;
+    color: #ffffff; /* Ensure text is visible */
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 2px solid #004bb5;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Body styling */
+.calendar-popup .calendar-body {
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+/* Grid layout */
+.calendar-popup .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Calendar days */
+.calendar-popup .calendar-grid div {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    background: #e6e6e6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-popup .calendar-grid div:hover {
+    background: #0066ff;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+/* Highlight the current day */
+.calendar-popup .calendar-grid div.current-day {
+    background: #ffcc00;
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid #ff9900;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .calendar-popup {
+        width: 320px;
+        right: 20px;
+    }
+
+    .calendar-popup header {
+        font-size: 16px;
+    }
+
+    .calendar-popup .calendar-grid div {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day-name {
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    background-color: #f0f0f0;
+}
+
+.day-cell, .blank-day {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.current-day {
+    background-color: #ffeb3b;
+    font-weight: bold;
+}
+
+.event-indicator {
+    display: block;
+    font-size: 0.8rem;
+    color: #007bff;
+    margin-top: 5px;
+}
+#calendarDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+/* Styles for navigation buttons and month/year display */
+#monthYearDisplay {
+    color: #0066ff; /* Blue color for the month/year */
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    text-transform: capitalize;
+    text-align: center;
+    display: inline-block;
+}
+
+button#prevMonth, button#nextMonth {
+    background-color: #0066ff; /* Blue button background */
+    color: #fff; /* White text for the buttons */
+    border: none;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+button#nextMonth{
+    background-color: #0066ff; /* Blue button background */
+    color: #fff; /* White text for the buttons */
+    border: none;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+button#prevMonth:hover, button#nextMonth:hover {
+    background-color: #004bb5; /* Darker blue on hover */
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+button#prevMonth:active, button#nextMonth:active {
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Positioning for the calendar navigation */
+.calendar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
+    border-radius: 12px 12px 0 0; /* Matches calendar popup */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar popup adjustments for navigation */
+.calendar-popup header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #0066ff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #monthYearDisplay {
+        font-size: 16px;
+    }
+
+    button#prevMonth, button#nextMonth {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .calendar-navigation {
+        flex-direction: column;
+    }
+}

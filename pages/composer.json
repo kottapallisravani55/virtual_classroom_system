@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 {
     "require": {
         "infobip/infobip-api-php-client": "^5.0",
         "twilio/sdk": "^6.0"
     }
 }
+=======
+{
+    "require": {
+        "infobip/infobip-api-php-client": "^5.0",
+        "twilio/sdk": "^6.0"
+    }
+}
+>>>>>>> ee7c9565c28e3f015817e1645a6e2d0b3b949065
