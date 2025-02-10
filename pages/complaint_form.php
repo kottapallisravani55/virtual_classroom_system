@@ -43,6 +43,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Complaint</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+        .container {
+          max-width: 600px;
+          margin: 50px auto;
+          padding: 20px;
+          background: #ffffff;
+          border-radius: 15px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container p{
+          text-align: center;
+          font-weight: 600;
+          color:blue;
+        }
+        h2 {
+          text-align: center;
+          color: #333;
+        }
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+        label {
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+        input, select, textarea, button {
+          padding: 10px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 15px;
+        }
+        button {
+          background-color: #007bff;
+          color: white;
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: #0056b3;
+        }
+      </style>
     <script>
         // AJAX function to fetch subject based on teacher selection
         $(document).ready(function() {
@@ -67,31 +115,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </script>
 </head>
 <body>
-    <h1>Submit Your Complaint</h1>
+    <div class = "container">
+        <h2>Submit a Complaint</h2>
 
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-        <p>Complaint submitted successfully!</p>
-    <?php endif; ?>
+    
 
     <form action="complaint_form.php" method="POST">
-        <label for="teacher_id">Select Teacher:</label>
+        <label for="teacher_id">Teacher ID:</label>
         <select name="teacher_id" id="teacher_id" required>
-            <option value="">--Select Teacher--</option>
+            <option value="">--Select Teacher ID--</option>
             <?php while ($teacher = $teachers_result->fetch_assoc()): ?>
                 <option value="<?php echo htmlspecialchars($teacher['username']); ?>">
                     <?php echo htmlspecialchars($teacher['username']); ?>
                 </option>
             <?php endwhile; ?>
-        </select><br><br>
+        </select>
 
         <label for="subject">Subject:</label>
-        <input type="text" name="subject" id="subject" required readonly><br><br>
+        <input type="text" name="subject" id="subject" 
+        placeholder="Enter the subject"
+        required readonly>
 
         <label for="message">Complaint Message:</label>
-        <textarea name="message" id="message" rows="4" required></textarea><br><br>
+        <textarea name="message" id="message" rows="4"
+        placeholder="Describe your issue..." required></textarea>
 
-        <button type="submit">Submit Complaint</button>
+        <button type="submit"><b>Submit</b></button>
     </form>
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+        <p >Complaint submitted successfully!</p>
+    <?php endif; ?>
+    </div>
 
 </body>
 </html>
