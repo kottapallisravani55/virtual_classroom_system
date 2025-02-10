@@ -49,9 +49,65 @@ $result = $conn->query($sql_assignments);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignments - Virtual Classroom</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        /* css updated */
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+          }
+          .container {
+            width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          .container p{
+            text-align: center;
+            font-weight: 600;
+            color:blue;
+          }
+          h2, h3{
+            text-align: center;
+            color: #333;
+          }
+          form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          }
+          label {
+            font-weight: bold;
+            margin-bottom: 5px;
+          }
+          input, button {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+          }
+          button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+          }
+          button:hover {
+            background-color: #0056b3;
+          }
+          .table{
+            border:2 px black;
+            justify-content: center;
+            text-align: center;
+            margin: auto;
+            padding: auto;
+          }
+        </style>
 </head>
 <body>
-    <div class="activities-container">
+    <div class="container">
         <h2>Assignments</h2>
 
         <?php if ($role == 'student'): ?>
@@ -59,12 +115,12 @@ $result = $conn->query($sql_assignments);
             <form action="assignment.php" method="POST" enctype="multipart/form-data">
                 <label for="assignment_file">Choose Assignment File:</label>
                 <input type="file" name="assignment_file" id="assignment_file" required><br><br>
-                <button type="submit" class="btn">Submit Assignment</button>
+                <button type="submit" class="btn"><b>submit</b></button>
             </form>
         <?php endif; ?>
 
         <h3>All Assignments</h3>
-        <table>
+        <table class="table">
             <tr>
                 <th>Student ID</th>
                 <th>Assignment File</th>
