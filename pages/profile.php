@@ -103,19 +103,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Profile Page</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        body {
+                body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: rgba(0, 0, 0, 0.1);
         }
         .container {
-            width: 50%;
+            max-width: 400px;
             margin: 50px auto;
-            background: #fff;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         h1 {
@@ -127,8 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .profile-photo {
             margin: 20px auto;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #007bff;
@@ -141,16 +141,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-color: #007bff;
             color: white;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
         }
         .profile-info {
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1.6;
             text-align: left;
             margin-top: 20px;
@@ -178,36 +178,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .avatars img.selected {
             border-color: #007bff;
         }
-        .settings {
-            margin-top: 30px;
+        .form-group {
+            margin: 10px 0;
             text-align: left;
         }
-        .settings h3 {
-            color: #007bff;
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
         }
-        .settings form {
-            margin-top: 10px;
-        }
-        .settings form input {
+        .form-group input {
             width: 100%;
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
-        .settings form button {
-            padding: 10px 20px;
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .save-btn{
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white;
+             border: none; 
+             border-radius: 10px; 
+             cursor: pointer;
+        }
+        .save-btn:hover {
+            background-color: #0056b3;
+        }
+        .password-section {
+            display: none;
+            margin-top: 20px;
+        }
+    
+
     </style>
+     
+   
 </head>
 <body>
     <div class="container">
-        <h1>Your Profile</h1>
+        
         <!-- Current Profile Photo -->
         <form method="POST" action="" enctype="multipart/form-data">
             <div class="profile-photo-container">
@@ -246,21 +274,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </label>
                 <?php endforeach; ?>
             </div>
-            <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                Save Avatar
+            <button type="submit"  class="save-btn">
+                Save
             </button>
         </form>
-
-        <!-- Settings Section -->
-        <div class="settings">
-            <h3>Change Password</h3>
+        <button class="btn" onclick="togglePasswordSection()">Change Password</button>
+        
+        <div class="password-section" id="password-section">
             <form method="POST" action="">
-                <input type="password" name="current_password" placeholder="Current Password" required>
-                <input type="password" name="new_password" placeholder="New Password" required>
-                <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
-                <button type="submit">Update Password</button>
+                <div class="form-group">
+                    <input type="password" name="current_password" placeholder="Current Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="new_password" placeholder="New Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
+                </div>
+                <button type="submit" class="btn">Update Password</button>
             </form>
-        </div>
+        </div>        
     </div>
 
     <script>
@@ -270,6 +303,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Highlight the selected avatar
             inputElement.nextElementSibling.classList.add('selected');
+        }
+        function togglePasswordSection() {
+            const section = document.getElementById('password-section');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
         }
     </script>
 </body>
